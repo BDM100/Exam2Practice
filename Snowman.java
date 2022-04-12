@@ -25,7 +25,6 @@ public class Snowman extends Thread {
      *               snowman's base
      */
     public Snowman(Point center, Point other) {
-
         this.diameter = (int) center.distance(other) * 2;
         this.upperLeft = new Point(center.x - diameter / 2, center.y - diameter / 2);
     }
@@ -36,7 +35,18 @@ public class Snowman extends Thread {
      * @param g the Graphics object on which the ball should be drawn
      */
     public void paint(Graphics g) {
+        //g.drawOval(upperLeft.x, upperLeft.y, diameter, diameter);
+        drawSnowman(upperLeft, g);
+    }
 
+    public void drawSnowman(Point upperLeft, Graphics g) {
         g.drawOval(upperLeft.x, upperLeft.y, diameter, diameter);
+        diameter = (int)(diameter * 0.75);
+        upperLeft = new Point(upperLeft.x + diameter / 6, upperLeft.y - diameter);
+        if (diameter > MIN_SIZE) {
+            drawSnowman(upperLeft, g);
+        }else{
+            g.drawOval(upperLeft.x, upperLeft.y, diameter, diameter);
+        }
     }
 }

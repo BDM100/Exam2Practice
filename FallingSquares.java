@@ -11,13 +11,15 @@ import javax.swing.*;
  * @version Spring 2022
  */
 
-public class HoverSquares extends MouseAdapter implements Runnable {
+public class FallingSquares extends MouseAdapter implements Runnable {
 
     // square size
     public static final int SIZE = 50;
 
     // list of squares currently on the screen
     private java.util.List<Point> upperLefts;
+
+    private java.util.List<Square> list;
 
     private JPanel panel;
     Point currentPos;
@@ -42,15 +44,12 @@ public class HoverSquares extends MouseAdapter implements Runnable {
 
                 super.paintComponent(g);
 
-                // draw the squares
-                for (Point p : upperLefts) {
+                int i = 0;
+                while (i < list.size()) {
+                    Square s = list.get(i);
+                    s.paint(g);
+                    i++;
 
-                    if(currentPos.x > p.x && currentPos.x < p.x + SIZE && currentPos.y > p.y && currentPos.y < p.y + SIZE){
-                        g.setColor(Color.RED);
-                    }else{
-                        g.setColor(Color.BLACK);
-                    }
-                    g.fillRect(p.x, p.y, SIZE, SIZE);
                 }
 
             }
@@ -60,6 +59,8 @@ public class HoverSquares extends MouseAdapter implements Runnable {
         panel.addMouseMotionListener(this);
 
         upperLefts = new ArrayList<Point>();
+
+        list = new ArrayList<Square>();
 
         frame.pack();
         frame.setVisible(true);
@@ -74,26 +75,33 @@ public class HoverSquares extends MouseAdapter implements Runnable {
     @Override
     public void mousePressed(MouseEvent e) {
 
-        upperLefts.add(e.getPoint());
+        Square newSquare = new Square(e.getPoint(), panel);
+        list.add(newSquare);
+        panel.repaint();
+
+        newSquare.start();
         panel.repaint();
     }
 
-    @Override
-    public void mouseMoved(MouseEvent e){
-        currentPos = e.getPoint();
-        panel.repaint();
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e){
-        for (Point p : upperLefts){
-            p.x = rand.nextInt(700);
-            p.y = rand.nextInt(700);
-            panel.repaint();
-        }
-    }
+    /*
+     * @Override
+     * public void mouseMoved(MouseEvent e){
+     * currentPos = e.getPoint();
+     * panel.repaint();
+     * }
+     */
+    /*
+     * @Override
+     * public void mouseExited(MouseEvent e){
+     * for (Point p : upperLefts){
+     * p.x = rand.nextInt(700);
+     * p.y = rand.nextInt(700);
+     * panel.repaint();
+     * }
+     * }
+     */
     public static void main(String args[]) {
 
-        javax.swing.SwingUtilities.invokeLater(new HoverSquares());
+        javax.swing.SwingUtilities.invokeLater(new FallingSquares());
     }
 }
